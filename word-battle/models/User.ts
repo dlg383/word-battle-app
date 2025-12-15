@@ -1,4 +1,4 @@
-import { Schema, model, connect, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const userSchema = new Schema({
     name: { type: String, required: true },
