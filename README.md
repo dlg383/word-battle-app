@@ -1,2 +1,2 @@
 # word-battle-app
-The new era is cuming!!
+The new era is coming!!
