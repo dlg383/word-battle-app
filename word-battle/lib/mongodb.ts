@@ -1,3 +1,4 @@
+import { serverEnv } from "@/env";
 import mongoose from "mongoose";
 
 declare global {
@@ -11,19 +12,13 @@ if (!cached) {
 }
 
 async function dbConnect() {
-    const MONGODB_URI = process.env.MONGODB_URI!;
-
-    if (!MONGODB_URI) {
-        throw new Error(
-            "Please define the MONGODB_URI environment variable inside .env.local",
-        );
-    }
+    const MONGODB_URI = serverEnv.env.MONGODB_URI;
 
     if (cached.conn) {
         return cached.conn;
     }
     if (!cached.promise) {
-        const opts = {
+        const opts: mongoose.ConnectOptions = {
             dbName: "word-battle",
             bufferCommands: false,
         };
