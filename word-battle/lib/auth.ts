@@ -1,14 +1,15 @@
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { cookies } from "next/headers";
+import { serverEnv } from "@/env";
 
-const COOKIE_NAME = "session";
-const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+export const COOKIE_NAME = "session";
+const secret = new TextEncoder().encode(serverEnv.env.JWT_SECRET);
 
-export type SessionPayload = {
-  sub: string; // userId
+export interface SessionPayload extends JWTPayload {
+  sub: string;
   email: string;
   name: string;
-};
+}
 
 export async function createSessionCookie(payload: SessionPayload) {
   const token = await new SignJWT(payload)
@@ -32,8 +33,11 @@ export async function getSession(): Promise<SessionPayload | null> {
 
   try {
     const { payload } = await jwtVerify(token, secret);
-    return payload as unknown as SessionPayload;
-  } catch {
+    return payload as SessionPayload;
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.error("DEBUG: JWT verification failed:", error);
+    }
     return null;
   }
 }
