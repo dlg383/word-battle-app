@@ -5,11 +5,11 @@ import { User } from "@/models/User";
 
 export async function GET(
     _req: NextRequest,
-    { params }: { params: { id: string } },
+    ctx: RouteContext<'/api/users/[id]'>,
 ) {
     await dbConnect();
 
-    const { id } = await params;
+    const { id } = await ctx.params;
 
     if (!isValidObjectId(id)) {
         return NextResponse.json({ message: "Invalid user id" }, { status: 400 });
