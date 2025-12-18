@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import connectDB from "@/lib/mongodb";
+import { dbConnect } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { createSessionCookie } from "@/lib/auth";
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
   const { name, email, password } = parsed.data;
 
-  await connectDB();
+  await dbConnect();
   const exists = await User.findOne({ email });
   if (exists) return NextResponse.json({ error: "Email already registered." }, { status: 409 });
 
