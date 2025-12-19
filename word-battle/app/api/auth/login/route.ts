@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   if (!user || !ok) return NextResponse.json({ error: "Invalid username or password." }, { status: 401 });
 
-  const session: SessionPayload = { sub: String(user._id), email: user.email, name: user.name };
+  const session: SessionPayload = { sub: String(user._id), email: user.email, name: user.userName };
   await createSessionCookie(session);
 
   return NextResponse.json({ id: session.sub, name: session.name, email: session.email });
