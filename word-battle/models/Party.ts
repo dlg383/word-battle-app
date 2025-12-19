@@ -23,6 +23,12 @@ const partySchema = new Schema({
         ref: 'User',
         required: true
     },
+    accessCode: {
+        type: String,
+        required: true,
+        unique: true,
+        length: 5
+    },
     members: [memberSchema],
     dailyWords: [dailyWordSchema]
 }, {
@@ -41,4 +47,4 @@ partySchema.methods.isMember = function (this: PartyDocument, userId: Types.Obje
     return this.members.some((m) => m.userId.equals(userId));
 };
 
-const Party = models.Party || model<PartyDocument>('Party', partySchema);
+export const Party = models.Party || model<PartyDocument>('Party', partySchema);

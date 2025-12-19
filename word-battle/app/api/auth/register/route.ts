@@ -27,9 +27,9 @@ export async function POST(req: Request) {
   if (exists) return NextResponse.json({ error: "Email already registered." }, { status: 409 });
 
   const passwordHash = await bcrypt.hash(password, 12);
-  const user = await User.create({ name, email, passwordHash });
+  const user = await User.create({ userName: name, email, passwordHash });
 
-  await createSessionCookie({ sub: String(user._id), email: user.email, name: user.name });
+  await createSessionCookie({ sub: String(user._id), email: user.email, name: user.userName });
 
-  return NextResponse.json({ id: String(user._id), name: user.name, email: user.email });
+  return NextResponse.json({ id: String(user._id), name: user.userName, email: user.email });
 }
