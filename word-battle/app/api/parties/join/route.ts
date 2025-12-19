@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
     party.members.push({
       userId,
-      userName: userName,
+      userName,
       joinedAt: new Date(),
     });
 
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
         name: party.name,
         accessCode: party.accessCode,
         ownerId: String(party.ownerId),
-        memberCount: party.members.length,
+        memberCount: party.memberCount,
       },
       { status: 200 }
     );

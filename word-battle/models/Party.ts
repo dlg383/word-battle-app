@@ -27,7 +27,8 @@ const partySchema = new Schema({
         type: String,
         required: true,
         unique: true,
-        length: 5
+        minlength: 5,
+        maxlength: 5
     },
     members: [memberSchema],
     dailyWords: [dailyWordSchema]

@@ -49,7 +49,7 @@ export async function POST(req: Request) {
             members: [
                 {
                     userId: session.sub,
-                    userName: name,
+                    userName: session.name,
                     joinedAt: new Date(),
                 },
             ],
