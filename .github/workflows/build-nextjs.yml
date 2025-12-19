@@ -5,11 +5,13 @@ on:
       - main
     paths:
       - 'word-battle/**'
+      - '.github/workflows/build-nextjs.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'word-battle/**'
+      - '.github/workflows/build-nextjs.yml'
 
 jobs:
   build:
