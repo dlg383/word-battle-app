@@ -7,7 +7,7 @@ const userSchema = new Schema({
     parties: [{
         partyId: { type: Schema.Types.ObjectId, ref: 'Party' },
         joinedAt: { type: Date, default: Date.now }
-    }, { timestamps: true }]
-})
+    }]
+}, { timestamps: true });
 
 export const User = models.User || model("User", userSchema);
