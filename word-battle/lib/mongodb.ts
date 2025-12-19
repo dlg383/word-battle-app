@@ -11,7 +11,7 @@ if (!cached) {
     cached = global.mongoose = { conn: null, promise: null };
 }
 
-async function dbConnect() {
+export async function dbConnect() {
     const MONGODB_URI = serverEnv.env.MONGODB_URI;
 
     if (cached.conn) {
@@ -35,5 +35,3 @@ async function dbConnect() {
 
     return cached.conn;
 }
-
-export default dbConnect;
