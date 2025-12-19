@@ -9,7 +9,7 @@ const joinPartySchema = z.object({
     .string()
     .length(5, "Access code must be 5 characters.")
     .regex(/^[A-Z0-9]{5}$/, "Access code must be uppercase letters and digits."),
-  userName: z.string().min(1).max(50).optional(),
+  userName: z.string().min(1).max(50),
 });
 
 export async function POST(req: Request) {
