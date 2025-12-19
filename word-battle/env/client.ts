@@ -8,4 +8,5 @@ export const env = createEnv({
     runtimeEnv: {
         NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
     },
+    skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
