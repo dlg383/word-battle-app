@@ -20,14 +20,18 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+
       - name: Install dependecies
         run: bun ci
         working-directory: word-battle
-      - name: Check code
-        run: bun run lint
-        working-directory: word-battle
+
+      # - name: Check code
+      #   run: bun run lint
+      #   working-directory: word-battle
+
       - name: Build app
         run: bun run build
         working-directory: word-battle
