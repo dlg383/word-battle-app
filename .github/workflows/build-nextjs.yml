@@ -1,0 +1,25 @@
+name: CI with Bun
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+      branches:
+        - main
+
+jobs:
+  build:
+    name: build-app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependecies
+        run: bun ci
+      - name: Check code
+        run: bun run lint
+      - name: Build app
+        run: bun run build
+      
