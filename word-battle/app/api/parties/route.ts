@@ -42,13 +42,6 @@ export async function POST(req: Request) {
             }
         }
 
-        if (!isUnique) {
-            return NextResponse.json(
-                { error: "Could not generate unique access code. Please try again." },
-                { status: 500 }
-            );
-        }
-
         const party = await Party.create({
             name,
             ownerId: session.sub,
