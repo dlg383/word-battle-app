@@ -1,8 +1,13 @@
 import { serverEnv } from "@/env";
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
+
+interface MongooseCache {
+    conn: Mongoose | null;
+    promise: Promise<Mongoose> | null;
+}
 
 declare global {
-    var mongoose: any;
+    var mongoose: MongooseCache;
 }
 
 let cached = global.mongoose;
@@ -14,7 +19,7 @@ if (!cached) {
 export async function dbConnect() {
     const MONGODB_URI = serverEnv.env.MONGODB_URI;
 
-    if (cached.conn) {
+    if (cached!.conn) {
         return cached.conn;
     }
     if (!cached.promise) {
