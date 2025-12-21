@@ -4,7 +4,7 @@ import { GameResult, gameResultSchema } from "./GameResult";
 export interface DailyWord {
     wordToGuess: string;
     dateScheduled: string;
-    wordScore?: number;
+    wordScore: number;
     results: GameResult[];
 }
 
