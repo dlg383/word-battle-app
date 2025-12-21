@@ -10,6 +10,8 @@ export interface PartyDocument extends Document {
     dailyWords: Types.DocumentArray<DailyWord>;
     memberCount: number;
     accessCode: string;
+    createdAt: Date;
+    updatedAt: Date;
     isMember(userId: Types.ObjectId | string): boolean;
 }
 
