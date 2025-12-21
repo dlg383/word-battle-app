@@ -53,10 +53,10 @@ export async function POST() {
                 wordScore: p.dailyWords[p.dailyWords.length - 1].wordScore,
             })),
         });
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error generating daily word:", error);
         return NextResponse.json(
-            { error: "Internal server error.", details: error?.message ?? String(error) },
+            { error: "Internal server error." },
             { status: 500 }
         );
     }
