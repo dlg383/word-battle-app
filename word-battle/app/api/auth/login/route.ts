@@ -4,15 +4,11 @@ import { z } from "zod";
 import { dbConnect } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { createSessionCookie, SessionPayload } from "@/lib/auth";
-
-const schema = z.object({
-  email: z.email("Invalid email format."),
-  password: z.string().min(8, "Password must be at least 8 characters long."),
-});
+import { loginSchema } from "@/schemas/login.schema";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
-  const parsed = schema.safeParse(body);
+  const parsed = loginSchema.safeParse(body);
 
   if (!parsed.success) {
     const flatteneed = z.flattenError(parsed.error);

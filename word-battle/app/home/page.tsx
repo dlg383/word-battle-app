@@ -1,0 +1,10 @@
+"use client";
+
+export default function Home() {
+	return (
+		<>
+			<h1>Welcome to Home User</h1>
+			<button>LogOut</button>
+		</>
+	);
+}
