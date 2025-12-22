@@ -39,7 +39,7 @@ export async function POST() {
                 dateScheduled: today,
                 wordScore: word.length * 10,
                 results: [],
-            })
+            });
 
             party.markModified("dailyWords");
             await party.save();
