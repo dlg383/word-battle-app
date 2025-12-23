@@ -1,5 +1,7 @@
 "use client";
 
+import CreateParty from "@/components/createParty/CreateParty";
+import JoinParty from "@/components/joinParty/JoinParty";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Users } from "lucide-react";
 
@@ -57,19 +59,8 @@ export default function HomePage() {
 
           {/* SECCIÓN DE BOTONES (Parte inferior del wireframe) */}
           <div className="grid grid-cols-2 gap-4 h-32">
-            <button className="flex flex-col items-center justify-center gap-2 bg-zinc-200 hover:bg-zinc-300 text-zinc-800 rounded-2xl transition-all active:scale-95 border border-zinc-300 shadow-sm">
-              <Plus className="w-6 h-6" />
-              <span className="text-[10px] font-black uppercase tracking-tighter leading-none text-center px-2">
-                Create a<br/>Party
-              </span>
-            </button>
-
-            <button className="flex flex-col items-center justify-center gap-2 bg-zinc-200 hover:bg-zinc-300 text-zinc-800 rounded-2xl transition-all active:scale-95 border border-zinc-300 shadow-sm">
-              <Users className="w-6 h-6" />
-              <span className="text-[10px] font-black uppercase tracking-tighter leading-none text-center px-2">
-                Join a<br/>Party
-              </span>
-            </button>
+            <CreateParty/>
+            <JoinParty/>
           </div>
 
         </CardContent>
