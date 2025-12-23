@@ -5,8 +5,13 @@ import { Input } from "../ui/input";
 import z from "zod";
 import { Button } from "../ui/button";
 import { registerSchema } from "@/schemas/register.schema";
+import { registerAction } from "./actions";
+import { startTransition, useActionState } from "react";
+import { Spinner } from "../ui/spinner";
 
 export default function Register() {
+  const [state, action, pending] = useActionState(registerAction, null);
+
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -16,16 +21,23 @@ export default function Register() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof registerSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
-  }
+  const handleFormSubmit = (data: z.infer<typeof registerSchema>) => {
+    const formData = new FormData();
+    formData.append("name", data.name)
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+
+    console.log("llamada server");
+
+    startTransition(() => {
+      action(formData);
+    });
+  };
 
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="name"
@@ -70,7 +82,14 @@ export default function Register() {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+
+          {state?.error && (
+            <div className="p-3 bg-destructive/15 border border-destructive text-destructive text-sm rounded-md">
+              {state.error}
+            </div>
+          )}
+
+          <Button type="submit">{pending ? <Spinner/> : 'Submit'}</Button>
         </form>
       </Form>
     </div>
