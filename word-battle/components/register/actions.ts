@@ -1,12 +1,12 @@
 "use server"
 
-import { loginSchema } from "@/schemas/login.schema";
+import { registerSchema } from "@/schemas/register.schema";
 import z from "zod";
 import { redirect } from "next/navigation";
-import { loggued } from "@/services/login/login.service";
+import { register } from "@/services/register/register.service";
 
-export async function loginAction(prevState: any, formData: FormData) {
-  const result = loginSchema.safeParse(Object.fromEntries(formData));
+export async function registerAction(prevState: any, formData: FormData) {
+  const result = registerSchema.safeParse(Object.fromEntries(formData));
   
   if (!result.success) {
     return { 
@@ -15,11 +15,11 @@ export async function loginAction(prevState: any, formData: FormData) {
     };
   };
 
-  const { email, password } = result.data;
+  const { name, email, password } = result.data;
   let isSuccessful = false;
 
   try {
-    const  {success, error}= (await loggued(email, password));
+    const  {success, error}= (await register(name, email, password));
 
     if(!success) return {success, error};
 
