@@ -1,44 +1,32 @@
 "use server"
 
+import { loginSchema } from "@/schemas/login.schema";
+import z from "zod";
 import { redirect } from "next/navigation";
-import { clientEnv } from "@/env";
-import { cookies } from 'next/headers'
-import { COOKIE_NAME } from "@/lib/auth";
+import { loggued } from "@/services/login/login.service";
 
-export async function login(prevState: any, formData: FormData) {
-  const data = Object.fromEntries(formData.entries());
+export async function loginAction(prevState: any, formData: FormData) {
+  const result = loginSchema.safeParse(Object.fromEntries(formData));
   
+  if (!result.success) {
+    return { 
+      error: "Invalid Data.", 
+      details: z.flattenError(result.error).fieldErrors 
+    };
+  };
+
+  const { email, password } = result.data;
+  let isSuccessful = false;
 
   try {
-      const res = await fetch(`${clientEnv.env.NEXT_PUBLIC_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email, password: data.password }),
-      });
+    const  {success, error}= (await loggued(email, password));
 
-      const user = await res.json().catch(() => ({}));
+    if(!success) return {success, error};
 
-      if (!res.ok) {
-        return { error: user?.error || "Login failed" };
-      }
+    isSuccessful = true;
+  } catch (e) {
+    console.log(e);
+  }
 
-      const setCookieHeader = res.headers.get("set-cookie");
-    
-      if (setCookieHeader) {
-        // Extraemos el valor del token (la parte entre 'session=' y el ';')
-        const token = setCookieHeader.split(';')[0].split('=')[1];
-        
-        const cookieStore = await cookies();
-        cookieStore.set("session", token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          path: "/",
-          maxAge: 604800, // 7 días (coincidiendo con tu log)
-        });
-      }
-
-    } catch (e) {
-      console.log(e);
-    }
+  if(isSuccessful) redirect("/home")
 }

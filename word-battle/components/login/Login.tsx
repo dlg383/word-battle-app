@@ -6,11 +6,11 @@ import { Input } from "../ui/input";
 import { loginSchema } from "@/schemas/login.schema";
 import z from "zod";
 import { Button } from "../ui/button";
-import { login } from "./actions";
+import { loginAction } from "./actions";
 import { Spinner } from "../ui/spinner";
 
 export default function Login() {
-	const [state, action, pending] = useActionState(login, null);
+	const [state, action, pending] = useActionState(loginAction, null);
 
 	const form = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
@@ -20,11 +20,23 @@ export default function Login() {
 		},
 	});
 
+	// Esta función solo se ejecuta si la validación de Zod en el cliente PASA
+  const handleFormSubmit = (data: z.infer<typeof loginSchema>) => {
+    const formData = new FormData();
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+
+		console.log("llamada server");
+
+    startTransition(() => {
+      action(formData);
+    });
+  };
 
 	return (
 		<div>
 			<Form {...form}>
-				<form action={action} className="space-y-8">
+				<form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-8">
 					<FormField
 						control={form.control}
 						name="email"
@@ -54,6 +66,13 @@ export default function Login() {
 							</FormItem>
 						)}
 					/>
+
+					{state?.error && (
+            <div className="p-3 bg-destructive/15 border border-destructive text-destructive text-sm rounded-md">
+              {state.error}
+            </div>
+          )}
+
 					<Button type="submit">{pending ? <Spinner/> : 'Submit'}</Button>
 				</form>
 			</Form>
