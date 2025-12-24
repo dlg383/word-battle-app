@@ -1,16 +1,7 @@
-import { COOKIE_NAME } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import { logout } from "@/services/logout/logout.service";
 
 export async function POST() {
-  const res = NextResponse.json({ ok: true });
-
-  res.cookies.set(COOKIE_NAME, "", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
-  });
-
-  return res;
+  await logout();
+  return NextResponse.json({ ok: true });
 }
