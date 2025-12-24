@@ -1,45 +1,17 @@
 import { NextResponse } from "next/server";
-import { dbConnect } from "@/lib/mongodb";
-import { Party } from "@/models/Party";
-import { requireAuth } from "@/lib/requireAuth";
+import { getJoinedParties, type JoinedResult } from "@/services/parties/joined.service";
 
 export async function GET() {
-    try {
-        const session = await requireAuth();
+  try {
+    const result: JoinedResult = await getJoinedParties();
 
-        if (!session) {
-            return NextResponse.json(
-                { error: "No autorizado" },
-                { status: 401 }
-            );
-        }
-
-        await dbConnect();
-
-        const parties = await Party.find({
-            "members.userId": session.sub
-        })
-            .select("name ownerId accessCode members createdAt updatedAt")
-            .sort({ updatedAt: -1 })
-            .lean();
-
-        return NextResponse.json({
-            success: true,
-            parties: parties.map(party => ({
-                id: party._id,
-                name: party.name,
-                ownerId: party.ownerId,
-                accessCode: party.accessCode,
-                memberCount: party.members.length,
-                createdAt: party.createdAt,
-                updatedAt: party.updatedAt
-            }))
-        });
-    } catch (error) {
-        console.error("Error al obtener parties del usuario:", error);
-        return NextResponse.json(
-            { error: "Error al obtener las parties" },
-            { status: 500 }
-        );
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: result.status || 500 });
     }
+
+    return NextResponse.json({ success: true, parties: result.parties });
+  } catch (error) {
+    console.error("Error al obtener parties del usuario:", error);
+    return NextResponse.json({ error: "Error al obtener las parties" }, { status: 500 });
+  }
 }
