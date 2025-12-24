@@ -47,11 +47,18 @@ export async function POST() {
 
 
         return NextResponse.json({
-            parties: parties.map((p) => ({
-                partyId: String(p._id),
-                todaysWord: p.dailyWords[p.dailyWords.length - 1].wordToGuess,
-                wordScore: p.dailyWords[p.dailyWords.length - 1].wordScore,
-            })),
+            parties: parties.map((p) => {
+                const hasDailyWords = Array.isArray(p.dailyWords) && p.dailyWords.length > 0;
+                const lastDailyWord = hasDailyWords
+                    ? p.dailyWords[p.dailyWords.length - 1]
+                    : null;
+
+                return {
+                    partyId: String(p._id),
+                    todaysWord: lastDailyWord ? lastDailyWord.wordToGuess : null,
+                    wordScore: lastDailyWord ? lastDailyWord.wordScore : null,
+                };
+            }),
         });
     } catch (error) {
         console.error("Error generating daily word:", error);

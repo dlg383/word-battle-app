@@ -28,7 +28,13 @@ export async function guessWord(partyId: string, word: string, userId: string, u
 
     const target = dailyWord.wordToGuess;
 
-    const letters = evaluateGuess(target, word);
+    const normalizedGuess = word.toUpperCase().trim();
+
+    if (normalizedGuess.length !== target.length) {
+        return { success: false, error: `Guess must be exactly ${target.length} letters.`, guessed: false, attempts: null, letters: null };
+    }
+
+    const letters = evaluateGuess(target, normalizedGuess);
 
     const guessed = letters.every(s => s === "correct");
     let user = dailyWord.results.find(r => r.userId.equals(userId));
@@ -78,21 +84,21 @@ function evaluateGuess(targetRaw: string, guessRaw: string): LetterState[] {
     const counts: Record<string, number> = {};
 
     for (let i = 0; i < n; i++) {
-        const t = target[i];
-        const g = guess[i];
-        if (t === g) {
+        const targetChar = target[i];
+        const guessChar = guess[i];
+        if (targetChar === guessChar) {
             result[i] = "correct";
         } else {
-            counts[t] = (counts[t] || 0) + 1;
+            counts[targetChar] = (counts[targetChar] || 0) + 1;
         }
     }
 
     for (let i = 0; i < n; i++) {
         if (result[i] === "correct") continue;
-        const g = guess[i];
-        if (counts[g] && counts[g] > 0) {
+        const guessChar = guess[i];
+        if (counts[guessChar] && counts[guessChar] > 0) {
             result[i] = "present";
-            counts[g]--;
+            counts[guessChar]--;
         } else {
             result[i] = "incorrect";
         }

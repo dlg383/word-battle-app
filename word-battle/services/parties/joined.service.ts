@@ -19,7 +19,7 @@ export type JoinedResult =
 export async function getJoinedParties(): Promise<JoinedResult> {
     try {
         const session = await requireAuth();
-        if (!session) return { success: false, status: 401, error: "No autorizado" };
+        if (!session) return { success: false, status: 401, error: "Unauthorized" };
 
         try {
             await dbConnect();
@@ -46,6 +46,6 @@ export async function getJoinedParties(): Promise<JoinedResult> {
         return { success: true, parties: mapped };
     } catch (error) {
         console.error("Error getting joined parties:", error);
-        return { success: false, status: 500, error: "Error al obtener las parties" };
+        return { success: false, status: 500, error: "Error retrieving parties" };
     }
 }

@@ -19,7 +19,7 @@ export async function createParty(name: string): Promise<CreatePartyResult> {
       return { success: false, status: 500, error: "Database connection failed." };
     }
 
-    let accessCode: string | undefined;
+    let accessCode = "";
     let isUnique = false;
     const gen = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 5);
 
