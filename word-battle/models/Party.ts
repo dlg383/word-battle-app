@@ -1,4 +1,5 @@
 import { Schema, model, models, Types } from "mongoose";
+import type { Document, Model } from "mongoose";
 import { Member, memberSchema } from "./Member";
 import { DailyWord, dailyWordSchema } from "./DailyWord";
 
@@ -8,6 +9,9 @@ export interface PartyDocument extends Document {
     members: Types.DocumentArray<Member>;
     dailyWords: Types.DocumentArray<DailyWord>;
     memberCount: number;
+    accessCode: string;
+    createdAt: Date;
+    updatedAt: Date;
     isMember(userId: Types.ObjectId | string): boolean;
 }
 
@@ -48,4 +52,4 @@ partySchema.methods.isMember = function (this: PartyDocument, userId: Types.Obje
     return this.members.some((m) => m.userId.equals(userId));
 };
 
-export const Party = models.Party || model<PartyDocument>('Party', partySchema);
+export const Party = (models.Party as Model<PartyDocument>) || model<PartyDocument>("Party", partySchema);

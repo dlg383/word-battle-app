@@ -1,4 +1,15 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model, models, Types } from "mongoose";
+import type { Document, Model } from "mongoose";
+
+export interface UserDocument extends Document {
+    userName: string;
+    email: string;
+    passwordHash: string;
+    parties: Array<{
+        partyId: Types.ObjectId;
+        joinedAt: Date;
+    }>;
+}
 
 const userSchema = new Schema({
     userName: { type: String, required: true },
@@ -10,4 +21,4 @@ const userSchema = new Schema({
     }]
 }, { timestamps: true });
 
-export const User = models.User || model("User", userSchema);
+export const User = (models.User as Model<UserDocument>) || model<UserDocument>("User", userSchema);

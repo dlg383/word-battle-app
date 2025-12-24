@@ -3,8 +3,8 @@ import { GameResult, gameResultSchema } from "./GameResult";
 
 export interface DailyWord {
     wordToGuess: string;
-    dateScheduled: Date;
-    wordScore?: number;
+    dateScheduled: string;
+    wordScore: number;
     results: GameResult[];
 }
 
@@ -16,7 +16,7 @@ export const dailyWordSchema = new Schema({
         trim: true,
     },
     dateScheduled: {
-        type: Date,
+        type: String,
         required: true
     },
     wordScore: {

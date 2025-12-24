@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { dbConnect } from "@/lib/mongodb";
-import { Party } from "@/models/Party";
-import { requireAuth } from "@/lib/requireAuth";
-import { customAlphabet } from "nanoid";
+import { createParty, type CreatePartyResult } from "@/services/parties/create.service";
 
 const createPartySchema = z.object({
     name: z.string().min(1, "Party name is required.").max(50, "Party name must be at most 50 characters."),
@@ -11,11 +8,6 @@ const createPartySchema = z.object({
 
 export async function POST(req: Request) {
     try {
-        const session = await requireAuth();
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
         const body = await req.json().catch(() => null);
         const parsed = createPartySchema.safeParse(body);
 
@@ -29,43 +21,13 @@ export async function POST(req: Request) {
 
         const { name } = parsed.data;
 
-        await dbConnect();
+        const result: CreatePartyResult = await createParty(name);
 
-        let accessCode;
-        let isUnique = false;
-
-        while (!isUnique) {
-            accessCode = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 5)();
-            const existing = await Party.findOne({ accessCode });
-            if (!existing) {
-                isUnique = true;
-            }
+        if (!result.success) {
+            return NextResponse.json({ error: result.error }, { status: result.status || 400 });
         }
 
-        const party = await Party.create({
-            name,
-            ownerId: session.sub,
-            accessCode,
-            members: [
-                {
-                    userId: session.sub,
-                    userName: session.name,
-                    joinedAt: new Date(),
-                },
-            ],
-            dailyWords: [],
-        });
-
-        return NextResponse.json(
-            {
-                id: String(party._id),
-                name: party.name,
-                accessCode: party.accessCode,
-                ownerId: String(party.ownerId),
-                memberCount: party.memberCount,
-            },
-            { status: 201 }
-        );
+        return NextResponse.json(result.party, { status: 201 });
     } catch (error) {
         console.error("Error creating party:", error);
         return NextResponse.json(
