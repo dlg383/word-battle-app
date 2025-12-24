@@ -1,5 +1,6 @@
 "use client";
 
+import { useIsMobile } from "@/hooks/use-mobile";
 import { FormEvent, useEffect, useState } from "react";
 
 type MeResponse =
@@ -16,6 +17,8 @@ function pretty(obj: any) {
 
 export default function AuthTestPage() {
   const [tab, setTab] = useState<"register" | "login">("register");
+  const isMobile = useIsMobile();
+  console.log(isMobile);
 
   // session
   const [meLoading, setMeLoading] = useState(false);
